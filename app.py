@@ -4,7 +4,12 @@ import numpy as np
 
 app = Flask(__name__)
 
-model = pickle.load(open("titanic.pkl", "rb"))
+try:
+    model = pickle.load(open("titanic.pkl", "rb"))
+    print("Model loaded successfully.", flush=True)
+except Exception as e:
+    print("Failed to load model:", e, flush=True)
+    raise
 
 
 @app.route("/")  # by default all requests are get
@@ -20,8 +25,4 @@ def predict():
 
     prediction = model.predict([np.array(features)])
 
-    return f"Survival Prediction: {int(prediction[0])}"
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    return {"Prediction" : int(prediction[0])}
